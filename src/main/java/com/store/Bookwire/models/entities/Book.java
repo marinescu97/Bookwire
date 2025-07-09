@@ -40,7 +40,7 @@ public class Book {
     private String publicationYear;
 
     @Column(name = "number_of_pages")
-    private Integer numberOfPages;
+    private String numberOfPages;
 
     @Column(name = "price", precision = 5, scale = 2)
     private BigDecimal price;

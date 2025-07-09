@@ -30,7 +30,7 @@ class BookRepositoryTest {
                 .category(Category.BIOGRAPHY)
                 .isbn("1234567893653")
                 .publicationYear("2012")
-                .numberOfPages(320)
+                .numberOfPages("320")
                 .price(new BigDecimal("23.99"))
                 .quantity(10)
                 .build();

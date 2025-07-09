@@ -14,7 +14,7 @@ public class BookRequestDTO {
     private Category category;
     private String isbn;
     private String publicationYear;
-    private Integer numberOfPages;
+    private String numberOfPages;
     private BigDecimal price;
     private Integer quantity;
 }

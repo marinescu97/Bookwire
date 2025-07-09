@@ -60,7 +60,7 @@ class BookManagementControllerIT {
                 .category(Category.BIOGRAPHY)
                 .isbn("1234567890123")
                 .publicationYear("2013")
-                .numberOfPages(300)
+                .numberOfPages("300")
                 .price(new BigDecimal("12.99"))
                 .quantity(10)
                 .build();
