@@ -4,6 +4,7 @@ import com.store.Bookwire.exceptions.ResourceNotFoundException;
 import com.store.Bookwire.mappers.BookMapper;
 import com.store.Bookwire.models.Category;
 import com.store.Bookwire.models.dtos.BookRequestDTO;
+import com.store.Bookwire.models.dtos.BookUpdateDTO;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.impl.BookManagementServiceImpl;
@@ -34,6 +35,7 @@ class BookManagementServiceImplTest {
     private BookMapper mapper;
 
     private static BookRequestDTO testDto;
+    private static BookUpdateDTO updateDTO;
     private Book testBook;
 
     @BeforeAll
@@ -48,6 +50,8 @@ class BookManagementServiceImplTest {
                 .price(new BigDecimal("12.99"))
                 .quantity(10)
                 .build();
+
+        updateDTO = BookUpdateDTO.builder().build();
     }
 
     @BeforeEach
@@ -99,16 +103,16 @@ class BookManagementServiceImplTest {
         Long id = 1L;
 
         when(repository.findById(id)).thenReturn(Optional.of(testBook));
-        doNothing().when(mapper).updateFromDto(testDto, testBook);
+        doNothing().when(mapper).updateFromDto(updateDTO, testBook);
 
         when(repository.save(testBook)).thenReturn(testBook);
 
         when(mapper.toDto(testBook)).thenReturn(testDto);
 
-        BookRequestDTO result = service.updateById(id, testDto);
+        BookRequestDTO result = service.updateById(id, updateDTO);
 
         assertEquals(testDto, result);
-        verify(mapper).updateFromDto(testDto, testBook);
+        verify(mapper).updateFromDto(updateDTO, testBook);
         verify(repository).save(testBook);
         verify(mapper).toDto(testBook);
     }
@@ -119,7 +123,7 @@ class BookManagementServiceImplTest {
         when(repository.findById(invalidId)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class,
-                () -> service.updateById(invalidId, testDto));
+                () -> service.updateById(invalidId, updateDTO));
 
         String expectedMessage = String.format("Book with id %d not found.", invalidId);
         assertEquals(expectedMessage, exception.getMessage());
