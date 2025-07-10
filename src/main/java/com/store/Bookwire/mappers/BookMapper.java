@@ -6,6 +6,9 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
     Book toEntity(BookRequestDTO dto);
 
     BookRequestDTO toDto(Book book);

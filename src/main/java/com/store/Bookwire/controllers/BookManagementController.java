@@ -3,12 +3,15 @@ package com.store.Bookwire.controllers;
 import com.store.Bookwire.models.dtos.BookRequestDTO;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.services.BookManagementService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/books")
+@Validated
 public class BookManagementController {
     private final BookManagementService service;
 
@@ -18,7 +21,7 @@ public class BookManagementController {
     }
 
     @PostMapping
-    public ResponseEntity<Book> save(@RequestBody BookRequestDTO dto){
+    public ResponseEntity<Book> save(@Valid @RequestBody BookRequestDTO dto){
         Book savedBook = service.save(dto);
         return ResponseEntity.ok(savedBook);
     }
@@ -30,7 +33,7 @@ public class BookManagementController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<BookRequestDTO> updateBook(@PathVariable Long id, @RequestBody BookRequestDTO dto){
+    public ResponseEntity<BookRequestDTO> updateBook(@PathVariable Long id,@Valid @RequestBody BookRequestDTO dto){
         return ResponseEntity.ok(service.updateById(id, dto));
     }
 }
