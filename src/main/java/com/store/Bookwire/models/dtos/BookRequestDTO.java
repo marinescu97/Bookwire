@@ -1,15 +1,24 @@
 package com.store.Bookwire.models.dtos;
 
 import com.store.Bookwire.models.Category;
+import com.store.Bookwire.models.entities.Book;
+import com.store.Bookwire.validators.Unique;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-@Builder
-public class BookRequestDTO {
+@SuperBuilder
+@NoArgsConstructor
+@Unique.List({
+        @Unique(entity = Book.class, fieldName = "title", message = "Title already exists."),
+        @Unique(entity = Book.class, fieldName = "isbn", message = "ISBN already exists.")
+})
+public class BookRequestDTO implements Serializable {
     @NotBlank(message = "Title cannot be blank.")
     @Size(max = 100, message = "Title must be at most 100 characters long.")
     private String title;
