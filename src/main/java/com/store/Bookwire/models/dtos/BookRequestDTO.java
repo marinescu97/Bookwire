@@ -4,6 +4,7 @@ import com.store.Bookwire.models.Category;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.validators.Unique;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @Data
 @SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 @Unique.List({
         @Unique(entity = Book.class, fieldName = "title", message = "Title already exists."),
         @Unique(entity = Book.class, fieldName = "isbn", message = "ISBN already exists.")
