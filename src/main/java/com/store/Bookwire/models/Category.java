@@ -1,8 +1,10 @@
 package com.store.Bookwire.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
+@Schema(description = "Category of the book")
 public enum Category {
     FICTION("Fiction"),
     NON_FICTION("Non-Fiction"),

@@ -11,8 +11,12 @@ import javax.sql.DataSource;
 @Component
 public class FlywayReset implements ApplicationRunner {
 
+    private final DataSource dataSource;
+
     @Autowired
-    private DataSource dataSource;
+    public FlywayReset(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void run(ApplicationArguments args) {
