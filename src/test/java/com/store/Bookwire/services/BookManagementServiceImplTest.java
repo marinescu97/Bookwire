@@ -3,8 +3,9 @@ package com.store.Bookwire.services;
 import com.store.Bookwire.exceptions.ResourceNotFoundException;
 import com.store.Bookwire.mappers.BookMapper;
 import com.store.Bookwire.models.Category;
-import com.store.Bookwire.models.dtos.BookRequestDTO;
-import com.store.Bookwire.models.dtos.BookUpdateDTO;
+import com.store.Bookwire.models.dtos.BookRequestDto;
+import com.store.Bookwire.models.dtos.BookUpdateDto;
+import com.store.Bookwire.models.dtos.view.BookAdminDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.impl.BookManagementServiceImpl;
@@ -34,13 +35,14 @@ class BookManagementServiceImplTest {
     @Mock
     private BookMapper mapper;
 
-    private static BookRequestDTO testDto;
-    private static BookUpdateDTO updateDTO;
+    private static BookRequestDto testDto;
+    private static BookUpdateDto updateDTO;
     private Book testBook;
+    private static BookAdminDto testBookAdminDto;
 
     @BeforeAll
     static void beforeAll() {
-        testDto = BookRequestDTO.builder()
+        testDto = BookRequestDto.builder()
                 .title("Test book")
                 .author("Test author")
                 .category(Category.BIOGRAPHY)
@@ -51,7 +53,18 @@ class BookManagementServiceImplTest {
                 .quantity(10)
                 .build();
 
-        updateDTO = BookUpdateDTO.builder().build();
+        updateDTO = BookUpdateDto.builder().build();
+
+        testBookAdminDto = BookAdminDto.builder()
+                .title("Test book")
+                .author("Test author")
+                .category(Category.BIOGRAPHY)
+                .isbn("1234567890123")
+                .publicationYear("2013")
+                .numberOfPages("300")
+                .price(new BigDecimal("12.99"))
+                .quantity(10)
+                .build();
     }
 
     @BeforeEach
@@ -63,14 +76,17 @@ class BookManagementServiceImplTest {
     void save_validData_shouldSaveBook() {
         when(mapper.toEntity(testDto)).thenReturn(testBook);
         when(repository.save(any(Book.class))).thenReturn(testBook);
+        when(mapper.toAdminDto(testBook)).thenReturn(testBookAdminDto);
 
-        Book savedBook = service.save(testDto);
+        BookAdminDto savedBook = service.save(testDto);
 
         assertNotNull(savedBook);
-        assertEquals(testBook, savedBook);
+        assertEquals(testBookAdminDto.getTitle(), savedBook.getTitle());
+        assertEquals(testBookAdminDto.getAuthor(), savedBook.getAuthor());
 
         verify(mapper).toEntity(testDto);
         verify(repository).save(any(Book.class));
+        verify(mapper).toAdminDto(testBook);
     }
 
     @Test
@@ -107,14 +123,14 @@ class BookManagementServiceImplTest {
 
         when(repository.save(testBook)).thenReturn(testBook);
 
-        when(mapper.toDto(testBook)).thenReturn(testDto);
+        when(mapper.toAdminDto(testBook)).thenReturn(testBookAdminDto);
 
-        BookRequestDTO result = service.updateById(id, updateDTO);
+        BookAdminDto result = service.updateById(id, updateDTO);
 
-        assertEquals(testDto, result);
+        assertEquals(testBookAdminDto, result);
         verify(mapper).updateFromDto(updateDTO, testBook);
         verify(repository).save(testBook);
-        verify(mapper).toDto(testBook);
+        verify(mapper).toAdminDto(testBook);
     }
 
     @Test

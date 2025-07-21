@@ -3,7 +3,7 @@ package com.store.Bookwire.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.Bookwire.mappers.BookMapper;
 import com.store.Bookwire.models.Category;
-import com.store.Bookwire.models.dtos.BookRequestDTO;
+import com.store.Bookwire.models.dtos.BookRequestDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import jakarta.persistence.EntityManager;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,12 +45,12 @@ class BookManagementControllerIT {
     @Autowired
     private EntityManager entityManager;
 
-    protected BookRequestDTO testDto;
+    protected BookRequestDto testDto;
     protected String stringDto;
     protected Book testBook;
 
     void initTestDto() {
-        testDto = BookRequestDTO.builder()
+        testDto = BookRequestDto.builder()
                 .title("Test book")
                 .author("Test author")
                 .category(Category.BIOGRAPHY)
@@ -84,17 +85,15 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void save_validData_shouldSaveBook() throws Exception {
-            mockMvc.perform(post("/api/books")
+            mockMvc.perform(post("/api/admin/books")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").isNumber())
                     .andExpect(jsonPath("$.title").value(testDto.getTitle()))
-                    .andExpect(jsonPath("$.author").value(testDto.getAuthor()))
-                    .andExpect(jsonPath("$.createdDate").exists())
-                    .andExpect(jsonPath("$.updatedDate").exists());
+                    .andExpect(jsonPath("$.author").value(testDto.getAuthor()));
 
             Book savedBook = repository.findAll().getFirst();
 
@@ -105,8 +104,19 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "customer", roles = {"CUSTOMER"})
+        void save_invalidUser_shouldNotSaveBook() throws Exception {
+            mockMvc.perform(post("/api/admin/books")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(testDto)))
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void save_invalidData_shouldReturnBadRequest_withErrorMessages() throws Exception {
-            mockMvc.perform(post("/api/books")
+            mockMvc.perform(post("/api/admin/books")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(stringDto))
@@ -122,6 +132,7 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void save_invalidCategory_shouldReturnBadRequest_withErrorMessage() throws Exception {
             stringDto = """
                     {
@@ -136,7 +147,7 @@ class BookManagementControllerIT {
                     }
                     """;
 
-            mockMvc.perform(post("/api/books")
+            mockMvc.perform(post("/api/admin/books")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(stringDto))
@@ -157,8 +168,9 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void save_duplicateData_shouldReturnBadRequest_withErrorMessages() throws Exception {
-            mockMvc.perform(post("/api/books")
+            mockMvc.perform(post("/api/admin/books")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
@@ -170,17 +182,19 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void deleteById_existingBook_shouldDeleteBook() throws Exception {
-            mockMvc.perform(delete("/api/books/" + testBook.getId()))
+            mockMvc.perform(delete("/api/admin/books/" + testBook.getId()))
                     .andExpect(status().isNoContent());
 
             assertThat(repository.findAll()).isEmpty();
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void deleteById_nonExistingBook_shouldReturnNotFound() throws Exception {
             long id = 100L;
-            mockMvc.perform(delete("/api/books/" + id)
+            mockMvc.perform(delete("/api/admin/books/" + id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -188,12 +202,13 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void updateBook_existingBook_shouldUpdateBook() throws Exception {
             testDto.setTitle("Updated title");
 
             LocalDateTime oldUpdatedDate = testBook.getUpdatedDate();
 
-            mockMvc.perform(put("/api/books/" + testBook.getId())
+            mockMvc.perform(put("/api/admin/books/" + testBook.getId())
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
@@ -217,13 +232,14 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void updateById_nonExistingBook_shouldReturnNotFound() throws Exception {
             long id = 100L;
 
             testDto.setTitle("Another title");
             testDto.setIsbn("8364790354723");
 
-            mockMvc.perform(put("/api/books/" + id)
+            mockMvc.perform(put("/api/admin/books/" + id)
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
@@ -232,8 +248,9 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void updateById_invalidData_shouldReturnBadRequest_withErrorMessages() throws Exception {
-            mockMvc.perform(put("/api/books/" + testBook.getId())
+            mockMvc.perform(put("/api/admin/books/" + testBook.getId())
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(stringDto))
@@ -251,6 +268,7 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void updateById_invalidCategory_shouldReturnBadRequest_withErrorMessage() throws Exception {
             stringDto = """
                     {
@@ -265,7 +283,7 @@ class BookManagementControllerIT {
                     }
                     """;
 
-            mockMvc.perform(put("/api/books/" + testBook.getId())
+            mockMvc.perform(put("/api/admin/books/" + testBook.getId())
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(stringDto))
@@ -278,12 +296,13 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void updateById_duplicateData_andAnotherId_shouldReturnBadRequest_withErrorMessages() throws Exception {
             testDto.setTitle("Test duplicate title");
             testDto.setIsbn("8364790354723");
             Book anotherBook = repository.save(bookMapper.toEntity(testDto));
 
-            mockMvc.perform(put("/api/books/" + testBook.getId())
+            mockMvc.perform(put("/api/admin/books/" + testBook.getId())
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))
@@ -298,10 +317,11 @@ class BookManagementControllerIT {
         }
 
         @Test
+        @WithMockUser(username = "admin", roles = {"ADMIN"})
         void updateById_duplicateData_andSameId_shouldUpdateBook() throws Exception {
             testDto.setQuantity(10);
 
-            mockMvc.perform(put("/api/books/" + testBook.getId())
+            mockMvc.perform(put("/api/admin/books/" + testBook.getId())
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(testDto)))

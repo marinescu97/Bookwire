@@ -20,7 +20,7 @@ import java.math.BigDecimal;
         @Unique(entity = Book.class, fieldName = "title", message = "Title already exists."),
         @Unique(entity = Book.class, fieldName = "isbn", message = "ISBN already exists.")
 })
-public class BookRequestDTO implements Serializable {
+public class BookRequestDto implements Serializable {
     @NotBlank(message = "Title cannot be blank.")
     @Size(max = 100, message = "Title must be at most 100 characters long.")
     private String title;

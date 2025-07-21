@@ -1,8 +1,8 @@
 package com.store.Bookwire.controllers;
 
-import com.store.Bookwire.models.dtos.BookRequestDTO;
-import com.store.Bookwire.models.dtos.BookUpdateDTO;
-import com.store.Bookwire.models.entities.Book;
+import com.store.Bookwire.models.dtos.BookRequestDto;
+import com.store.Bookwire.models.dtos.BookUpdateDto;
+import com.store.Bookwire.models.dtos.view.BookAdminDto;
 import com.store.Bookwire.services.BookManagementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api/admin/books")
 @Validated
 public class BookManagementController {
     private final BookManagementService service;
@@ -23,8 +23,8 @@ public class BookManagementController {
     }
 
     @PostMapping
-    public ResponseEntity<Book> save(@Valid @RequestBody BookRequestDTO dto){
-        Book savedBook = service.save(dto);
+    public ResponseEntity<BookAdminDto> save(@Valid @RequestBody BookRequestDto dto){
+        BookAdminDto savedBook = service.save(dto);
         return ResponseEntity.ok(savedBook);
     }
 
@@ -35,7 +35,7 @@ public class BookManagementController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookRequestDTO> updateBook(@PathVariable Long id,@Valid @RequestBody BookUpdateDTO dto){
+    public ResponseEntity<BookAdminDto> updateBook(@PathVariable Long id, @Valid @RequestBody BookUpdateDto dto){
         return ResponseEntity.ok(service.updateById(id, dto));
     }
 
@@ -43,7 +43,7 @@ public class BookManagementController {
     @InitBinder
     public void initBinder(WebDataBinder binder, @PathVariable(required = false) Long id) {
         Object target = binder.getTarget();
-        if (target instanceof BookUpdateDTO dto) {
+        if (target instanceof BookUpdateDto dto) {
             if (dto.getId() == null && id != null) {
                 dto.setId(id);
             }

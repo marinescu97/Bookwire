@@ -2,8 +2,9 @@ package com.store.Bookwire.services.impl;
 
 import com.store.Bookwire.exceptions.ResourceNotFoundException;
 import com.store.Bookwire.mappers.BookMapper;
-import com.store.Bookwire.models.dtos.BookRequestDTO;
-import com.store.Bookwire.models.dtos.BookUpdateDTO;
+import com.store.Bookwire.models.dtos.BookRequestDto;
+import com.store.Bookwire.models.dtos.BookUpdateDto;
+import com.store.Bookwire.models.dtos.view.BookAdminDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.BookManagementService;
@@ -22,8 +23,9 @@ public class BookManagementServiceImpl implements BookManagementService {
     }
 
     @Override
-    public Book save(BookRequestDTO dto) {
-        return repository.save(mapper.toEntity(dto));
+    public BookAdminDto save(BookRequestDto dto) {
+        Book book = mapper.toEntity(dto);
+        return mapper.toAdminDto(repository.save(book));
     }
 
     @Override
@@ -33,12 +35,12 @@ public class BookManagementServiceImpl implements BookManagementService {
     }
 
     @Override
-    public BookRequestDTO updateById(Long id, BookUpdateDTO dto) {
+    public BookAdminDto updateById(Long id, BookUpdateDto dto) {
         Book foundBook = findById(id);
 
         mapper.updateFromDto(dto, foundBook);
 
-        return mapper.toDto(repository.save(foundBook));
+        return mapper.toAdminDto(repository.save(foundBook));
     }
 
     private Book findById(Long id){
