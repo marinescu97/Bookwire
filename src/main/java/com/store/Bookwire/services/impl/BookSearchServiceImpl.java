@@ -1,7 +1,7 @@
 package com.store.Bookwire.services.impl;
 
 import com.store.Bookwire.mappers.BookMapper;
-import com.store.Bookwire.models.dtos.BookRequestDTO;
+import com.store.Bookwire.models.dtos.view.BookViewDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.BookSearchService;
@@ -13,9 +13,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,28 +31,28 @@ public class BookSearchServiceImpl implements BookSearchService {
     private final Set<String> SORT_FIELDS = Set.of("title", "price", "numberOfPages");
 
     @Override
-    public List<BookRequestDTO> getAll(int page, int size, String sortBy, String direction){
+    public List<BookViewDto> getAll(int page, int size, String sortBy, String direction){
         Pageable pageable = buildPageable(page, size, sortBy, direction);
         return repository.findAll(pageable)
                 .getContent()
                 .stream()
-                .map(mapper::toDto)
+                .map(this::getBookView)
                 .toList();
     }
 
     @Override
-    public List<BookRequestDTO> searchBooks(String value, int page, int size, String sortBy, String direction){
+    public List<BookViewDto> searchBooks(String value, int page, int size, String sortBy, String direction){
         Pageable pageable = buildPageable(page, size, sortBy, direction);
         Specification<Book> spec = bookSpecification.titleAuthorIsbnContains(value);
         Page<Book> result = repository.findAll(spec, pageable);
         return result.getContent()
                 .stream()
-                .map(mapper::toDto)
+                .map(this::getBookView)
                 .toList();
     }
 
     @Override
-    public List<BookRequestDTO> filterBooks(List<String> categories, Double minPrice, Double maxPrice, Integer minPages, Integer maxPages, int page, int size, String sortBy, String direction) {
+    public List<BookViewDto> filterBooks(List<String> categories, Double minPrice, Double maxPrice, Integer minPages, Integer maxPages, int page, int size, String sortBy, String direction) {
         Pageable pageable = buildPageable(page, size, sortBy, direction);
 
         Specification<Book> spec = bookSpecification
@@ -59,8 +62,13 @@ public class BookSearchServiceImpl implements BookSearchService {
 
         Page<Book> result = repository.findAll(spec, pageable);
         return result.getContent().stream()
-                .map(mapper::toDto)
+                .map(this::getBookView)
                 .toList();
+    }
+
+    @Override
+    public Optional<BookViewDto> getBook(Long id) {
+        return repository.findById(id).map(this::getBookView);
     }
 
     private Pageable buildPageable(int page, int size, String sortBy, String direction) {
@@ -71,5 +79,16 @@ public class BookSearchServiceImpl implements BookSearchService {
                 : Sort.by(validatedSortBy).ascending();
 
         return PageRequest.of(page, size, sort);
+    }
+
+    private BookViewDto getBookView(Book book) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isAdmin = auth != null &&
+                auth.isAuthenticated() &&
+                auth.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equalsIgnoreCase("ROLE_ADMIN"));
+
+        return isAdmin ? mapper.toAdminDto(book) : mapper.toCustomerDto(book);
     }
 }

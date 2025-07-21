@@ -2,9 +2,9 @@ package com.store.Bookwire.services.impl;
 
 import com.store.Bookwire.exceptions.InvalidCredentialsException;
 import com.store.Bookwire.mappers.UserMapper;
-import com.store.Bookwire.models.dtos.AuthResponse;
-import com.store.Bookwire.models.dtos.LoginRequest;
-import com.store.Bookwire.models.dtos.RegisterRequest;
+import com.store.Bookwire.models.dtos.auth.AuthResponse;
+import com.store.Bookwire.models.dtos.auth.LoginRequest;
+import com.store.Bookwire.models.dtos.auth.RegisterRequest;
 import com.store.Bookwire.models.entities.User;
 import com.store.Bookwire.repositories.UserRepository;
 import com.store.Bookwire.services.AuthService;

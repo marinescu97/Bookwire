@@ -1,11 +1,11 @@
 package com.store.Bookwire.services;
 
-import com.store.Bookwire.models.dtos.BookRequestDTO;
-import com.store.Bookwire.models.dtos.BookUpdateDTO;
-import com.store.Bookwire.models.entities.Book;
+import com.store.Bookwire.models.dtos.BookRequestDto;
+import com.store.Bookwire.models.dtos.BookUpdateDto;
+import com.store.Bookwire.models.dtos.view.BookAdminDto;
 
 public interface BookManagementService {
-    Book save(BookRequestDTO dto);
+    BookAdminDto save(BookRequestDto dto);
     void deleteById(Long id);
-    BookRequestDTO updateById(Long id, BookUpdateDTO dto);
+    BookAdminDto updateById(Long id, BookUpdateDto dto);
 }

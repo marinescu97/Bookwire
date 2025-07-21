@@ -1,8 +1,8 @@
 package com.store.Bookwire.controllers;
 
-import com.store.Bookwire.models.dtos.AuthResponse;
-import com.store.Bookwire.models.dtos.LoginRequest;
-import com.store.Bookwire.models.dtos.RegisterRequest;
+import com.store.Bookwire.models.dtos.auth.AuthResponse;
+import com.store.Bookwire.models.dtos.auth.LoginRequest;
+import com.store.Bookwire.models.dtos.auth.RegisterRequest;
 import com.store.Bookwire.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

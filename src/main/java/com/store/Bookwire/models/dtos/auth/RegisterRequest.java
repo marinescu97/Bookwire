@@ -1,4 +1,4 @@
-package com.store.Bookwire.models.dtos;
+package com.store.Bookwire.models.dtos.auth;
 
 import com.store.Bookwire.models.entities.User;
 import com.store.Bookwire.validators.Unique;

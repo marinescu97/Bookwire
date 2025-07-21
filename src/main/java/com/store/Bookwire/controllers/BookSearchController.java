@@ -1,9 +1,10 @@
 package com.store.Bookwire.controllers;
 
-import com.store.Bookwire.models.dtos.BookRequestDTO;
+import com.store.Bookwire.models.dtos.view.BookViewDto;
 import com.store.Bookwire.services.BookSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,29 +20,37 @@ public class BookSearchController {
         this.service = service;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<BookViewDto> getBook(@PathVariable Long id) {
+        return service.getBook(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping
-    public ResponseEntity<List<BookRequestDTO>> getAll(
+    public ResponseEntity<List<BookViewDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "title") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
-        List<BookRequestDTO> allBooks = service.getAll(page, size, sortBy, direction);
+            @RequestParam(defaultValue = "asc") String direction,
+                    Authentication auth) {
+        List<BookViewDto> allBooks = service.getAll(page, size, sortBy, direction);
         return ResponseEntity.ok(allBooks);
     }
 
     @GetMapping("/search/{value}")
-    public ResponseEntity<List<BookRequestDTO>> searchBooks(
+    public ResponseEntity<List<BookViewDto>> searchBooks(
             @PathVariable String value,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "title") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
-        List<BookRequestDTO> books = service.searchBooks(value, page, size, sortBy, direction);
+        List<BookViewDto> books = service.searchBooks(value, page, size, sortBy, direction);
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/filter")
-    public List<BookRequestDTO> filterBooks(
+    public List<BookViewDto> filterBooks(
             @RequestParam(required = false) List<String> categories,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,

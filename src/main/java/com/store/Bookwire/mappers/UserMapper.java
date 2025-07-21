@@ -1,6 +1,6 @@
 package com.store.Bookwire.mappers;
 
-import com.store.Bookwire.models.dtos.RegisterRequest;
+import com.store.Bookwire.models.dtos.auth.RegisterRequest;
 import com.store.Bookwire.models.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
