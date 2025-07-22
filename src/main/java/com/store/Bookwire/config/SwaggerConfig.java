@@ -24,7 +24,8 @@ public class SwaggerConfig {
                 .tags(List.of(
                         new Tag().name("Authentication").description("Manage user authentication"),
                         new Tag().name("Book management").description("Available only for admin"),
-                        new Tag().name("Book search").description("Display different data based on user")
+                        new Tag().name("Book search").description("Display different data based on user"),
+                        new Tag().name("Customer profile").description("Manage user profile")
                 ))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
