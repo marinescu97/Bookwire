@@ -1,6 +1,5 @@
-package com.store.Bookwire.config;
+package com.store.Bookwire.security;
 
-import com.store.Bookwire.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,10 +51,10 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void authenticateUser(String token, HttpServletRequest request) {
-        String username = jwtService.extractUsername(token);
+        Long userId = jwtService.extractUserId(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = ((CustomUserDetailsService) userDetailsService).loadUserById(userId);
 
             if (jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken auth =

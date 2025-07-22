@@ -1,6 +1,5 @@
-package com.store.Bookwire.config;
+package com.store.Bookwire.security;
 
-import com.store.Bookwire.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +40,7 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/api/books/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess ->

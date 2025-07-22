@@ -1,7 +1,6 @@
-package com.store.Bookwire.services.impl;
+package com.store.Bookwire.security;
 
 import com.store.Bookwire.models.entities.User;
-import com.store.Bookwire.services.JwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -28,7 +27,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(String.valueOf(user.getId()))
                 .claim("role", user.getRole().name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
@@ -36,19 +35,20 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    @Override
-    public String extractUsername(String token) {
-        return Jwts.parserBuilder()
+    public Long extractUserId(String token) {
+        String subject = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+        return Long.parseLong(subject);
     }
 
     @Override
     public boolean validateToken(String token, UserDetails userDetails) {
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername());
+        Long userIdFromToken = extractUserId(token);
+        Long userIdFromPrincipal = ((CustomUserDetails) userDetails).getId();
+        return userIdFromToken.equals(userIdFromPrincipal);
     }
 }

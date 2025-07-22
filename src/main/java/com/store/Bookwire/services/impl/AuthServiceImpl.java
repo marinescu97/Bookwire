@@ -8,7 +8,7 @@ import com.store.Bookwire.models.dtos.auth.RegisterRequest;
 import com.store.Bookwire.models.entities.User;
 import com.store.Bookwire.repositories.UserRepository;
 import com.store.Bookwire.services.AuthService;
-import com.store.Bookwire.services.JwtService;
+import com.store.Bookwire.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -28,6 +28,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @OneToOne(cascade =  CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
     @CreationTimestamp
     @Column(name = "created_date")
     private LocalDateTime createdDate;
