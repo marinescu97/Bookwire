@@ -3,9 +3,8 @@ package com.store.Bookwire.services;
 import com.store.Bookwire.exceptions.ResourceNotFoundException;
 import com.store.Bookwire.mappers.BookMapper;
 import com.store.Bookwire.models.Category;
-import com.store.Bookwire.models.dtos.BookRequestDto;
 import com.store.Bookwire.models.dtos.BookUpdateDto;
-import com.store.Bookwire.models.dtos.view.BookAdminDto;
+import com.store.Bookwire.models.dtos.BookAdminDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.impl.BookManagementServiceImpl;
@@ -35,14 +34,14 @@ class BookManagementServiceImplTest {
     @Mock
     private BookMapper mapper;
 
-    private static BookRequestDto testDto;
+    private static BookAdminDto testDto;
     private static BookUpdateDto updateDTO;
     private Book testBook;
     private static BookAdminDto testBookAdminDto;
 
     @BeforeAll
     static void beforeAll() {
-        testDto = BookRequestDto.builder()
+        testDto = BookAdminDto.builder()
                 .title("Test book")
                 .author("Test author")
                 .category(Category.BIOGRAPHY)

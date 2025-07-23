@@ -11,5 +11,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Schema(description = "DTO used for displaying user data")
 public class UserDto extends UserUpdateDto {
+    @Schema(description = "Address of the user")
     private AddressDto address;
 }

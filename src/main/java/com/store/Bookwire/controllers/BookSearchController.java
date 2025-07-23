@@ -1,6 +1,6 @@
 package com.store.Bookwire.controllers;
 
-import com.store.Bookwire.models.dtos.view.BookViewDto;
+import com.store.Bookwire.models.dtos.BookDto;
 import com.store.Bookwire.services.BookSearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +32,7 @@ public class BookSearchController {
             @ApiResponse(responseCode = "404", description = "Book not found")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<BookViewDto> getBook(@PathVariable Long id) {
+    public ResponseEntity<BookDto> getBook(@PathVariable Long id) {
         return service.getBook(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -41,13 +41,13 @@ public class BookSearchController {
     @Operation(summary = "Display all books", operationId = "a_displayAll")
     @ApiResponse(responseCode = "200", description = "List of all books")
     @GetMapping
-    public ResponseEntity<List<BookViewDto>> getAll(
+    public ResponseEntity<List<BookDto>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "title") String sortBy,
             @RequestParam(defaultValue = "asc") String direction,
                     Authentication auth) {
-        List<BookViewDto> allBooks = service.getAll(page, size, sortBy, direction);
+        List<BookDto> allBooks = service.getAll(page, size, sortBy, direction);
         return ResponseEntity.ok(allBooks);
     }
 
@@ -56,13 +56,13 @@ public class BookSearchController {
                 operationId = "c_search")
     @ApiResponse(responseCode = "200", description = "List of found books")
     @GetMapping("/search/{value}")
-    public ResponseEntity<List<BookViewDto>> searchBooks(
+    public ResponseEntity<List<BookDto>> searchBooks(
             @PathVariable String value,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "title") String sortBy,
             @RequestParam(defaultValue = "asc") String direction) {
-        List<BookViewDto> books = service.searchBooks(value, page, size, sortBy, direction);
+        List<BookDto> books = service.searchBooks(value, page, size, sortBy, direction);
         return ResponseEntity.ok(books);
     }
 
@@ -76,7 +76,7 @@ public class BookSearchController {
             @ApiResponse(responseCode = "400", description = "Invalid filter parameters"),
     })
     @GetMapping("/filter")
-    public List<BookViewDto> filterBooks(
+    public List<BookDto> filterBooks(
             @Parameter(description = "List of book categories to filter by", example = "PROGRAMMING, HISTORY")
             @RequestParam(required = false) List<String> categories,
 

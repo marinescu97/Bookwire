@@ -1,4 +1,4 @@
-package com.store.Bookwire.models.dtos.view;
+package com.store.Bookwire.models.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "DTO used for displaying a book for a customer or guest")
-public class BookCustomerDto extends BookViewDto {
+public class BookCustomerDto extends BookDto {
     @Schema(description = "A text displayed according to quantity", example = "In stock/Out of stock")
     private String stock;
 }

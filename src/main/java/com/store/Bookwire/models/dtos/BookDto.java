@@ -21,8 +21,8 @@ import java.math.BigDecimal;
         @Unique(entity = Book.class, fieldName = "title", message = "Title already exists."),
         @Unique(entity = Book.class, fieldName = "isbn", message = "ISBN already exists.")
 })
-@Schema(description = "Data transfer object used for creating a new book")
-public class BookRequestDto implements Serializable {
+@Schema(description = "DTO used to display a book", oneOf = {BookAdminDto.class, BookCustomerDto.class})
+public class BookDto implements Serializable {
     @NotBlank(message = "Title cannot be blank.")
     @Size(max = 100, message = "Title must be at most 100 characters long.")
     @Schema(description = "Title of the book", example = "Effective Java")
@@ -57,9 +57,4 @@ public class BookRequestDto implements Serializable {
     @DecimalMax(value = "999.99", message = "Price must not exceed 999.99.")
     @Schema(description = "Price of the book", example = "45.99")
     private BigDecimal price;
-
-    @NotNull(message = "Quantity cannot be null.")
-    @Min(value = 0, message = "Quantity must be a positive number.")
-    @Schema(description = "Number of copies available in stock", example = "50")
-    private Integer quantity;
 }

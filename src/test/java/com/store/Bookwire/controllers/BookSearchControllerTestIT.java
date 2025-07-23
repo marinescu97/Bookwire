@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.Bookwire.mappers.BookMapper;
 import com.store.Bookwire.models.Category;
 import com.store.Bookwire.models.UserRole;
-import com.store.Bookwire.models.dtos.BookRequestDto;
-import com.store.Bookwire.models.dtos.view.BookCustomerDto;
+import com.store.Bookwire.models.dtos.BookAdminDto;
+import com.store.Bookwire.models.dtos.BookCustomerDto;
 import com.store.Bookwire.models.entities.User;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.repositories.UserRepository;
@@ -45,7 +45,7 @@ class BookSearchControllerTestIT {
 
     private final String SEARCH_URI = "/api/books/search";
 
-    private List<BookRequestDto> testBooks;
+    private List<BookAdminDto> testBooks;
     private String adminToken;
     private String customerToken;
 
@@ -54,11 +54,11 @@ class BookSearchControllerTestIT {
         repository.deleteAll();
 
         testBooks = List.of(
-                new BookRequestDto("Clean Architecture", "Robert C. Martin", Category.SOFTWARE_DEVELOPMENT, "9780134494166", "2017", "432", new BigDecimal("34.99"), 6),
-                new BookRequestDto("Agile Software Development, Principles, Patterns, and Practices", "Robert C. Martin", Category.SOFTWARE_DEVELOPMENT, "9780135974445", "2002", "552", new BigDecimal("37.50"), 5),
-                new BookRequestDto("Thinking, Fast and Slow", "Daniel Kahneman", Category.NON_FICTION, "9780374533557", "2013", "512", new BigDecimal("18.99"), 7),
-                new BookRequestDto("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", Category.HISTORY, "9780062316097", "2015", "464", new BigDecimal("22.00"), 9),
-                new BookRequestDto("The Design of Everyday Things", "Don Norman", Category.TECHNOLOGY, "9780465050659", "2013", "368", new BigDecimal("20.00"), 8)
+                new BookAdminDto("Clean Architecture", "Robert C. Martin", Category.SOFTWARE_DEVELOPMENT, "9780134494166", "2017", "432", new BigDecimal("34.99"), 6),
+                new BookAdminDto("Agile Software Development, Principles, Patterns, and Practices", "Robert C. Martin", Category.SOFTWARE_DEVELOPMENT, "9780135974445", "2002", "552", new BigDecimal("37.50"), 5),
+                new BookAdminDto("Thinking, Fast and Slow", "Daniel Kahneman", Category.NON_FICTION, "9780374533557", "2013", "512", new BigDecimal("18.99"), 7),
+                new BookAdminDto("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", Category.HISTORY, "9780062316097", "2015", "464", new BigDecimal("22.00"), 9),
+                new BookAdminDto("The Design of Everyday Things", "Don Norman", Category.TECHNOLOGY, "9780465050659", "2013", "368", new BigDecimal("20.00"), 8)
         );
 
         repository.saveAll(testBooks.stream()
@@ -100,7 +100,7 @@ class BookSearchControllerTestIT {
     @Test
     void getAll_asGuest_sortByAuthorDesc_shouldReturnAllBooks_sortedByAuthor_descendingOrder() throws Exception{
         testBooks = testBooks.stream()
-                        .sorted(Comparator.comparing(BookRequestDto::getPrice).reversed())
+                        .sorted(Comparator.comparing(BookAdminDto::getPrice).reversed())
                         .collect(Collectors.toList());
         mockMvc.perform(get("/api/books?sortBy=price&direction=desc"))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ class BookSearchControllerTestIT {
     @Test
     void getAll_asGuest_invalidSortField_shouldFallbackToDefault() throws Exception {
         testBooks = testBooks.stream()
-                .sorted(Comparator.comparing(BookRequestDto::getTitle))
+                .sorted(Comparator.comparing(BookAdminDto::getTitle))
                 .toList();
 
         mockMvc.perform(get("/api/books?sortBy=invalidField&direction=desc"))
@@ -130,7 +130,7 @@ class BookSearchControllerTestIT {
     @Test
     void searchBooks_asAdmin_byTitle_shouldReturnOneBook() throws Exception{
         authenticateAdmin();
-        BookRequestDto book = testBooks.getFirst();
+        BookAdminDto book = testBooks.getFirst();
 
         mockMvc.perform(get(SEARCH_URI + "/clean")
                 .header("Authorization", "Bearer " + adminToken))
