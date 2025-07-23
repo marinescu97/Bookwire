@@ -22,7 +22,6 @@ public interface UserMapper {
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "updatedDate", ignore = true)
     @Mapping(target = "role", ignore = true)
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateUserFromDto(UserUpdateDto dto, @MappingTarget User user);
 
     UserDto toDto(User user);

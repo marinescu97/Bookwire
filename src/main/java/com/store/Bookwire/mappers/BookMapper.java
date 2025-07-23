@@ -1,9 +1,8 @@
 package com.store.Bookwire.mappers;
 
-import com.store.Bookwire.models.dtos.BookRequestDto;
 import com.store.Bookwire.models.dtos.BookUpdateDto;
-import com.store.Bookwire.models.dtos.view.BookAdminDto;
-import com.store.Bookwire.models.dtos.view.BookCustomerDto;
+import com.store.Bookwire.models.dtos.BookAdminDto;
+import com.store.Bookwire.models.dtos.BookCustomerDto;
 import com.store.Bookwire.models.entities.Book;
 import org.mapstruct.*;
 
@@ -12,7 +11,7 @@ public interface BookMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "updatedDate", ignore = true)
-    Book toEntity(BookRequestDto dto);
+    Book toEntity(BookAdminDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdDate", ignore = true)

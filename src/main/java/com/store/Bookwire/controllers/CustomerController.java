@@ -31,7 +31,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "403", description = "Not authorized"),
             @ApiResponse(responseCode = "400", description = "Invalid data")
     })
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<UserDto> updateProfile(@Valid @RequestBody UserUpdateDto dto) {
         return ResponseEntity.ok(customerService.updateUser(dto));
     }
@@ -43,7 +43,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Invalid data")
     })
     @PostMapping("/address")
-    public ResponseEntity<AddressDto> addAddress(@RequestBody @Valid AddressDto dto) {
+    public ResponseEntity<AddressDto> addAddress(@Valid @RequestBody AddressDto dto) {
         AddressDto addressDto = customerService.addAddress(dto);
         return ResponseEntity.ok(addressDto);
     }

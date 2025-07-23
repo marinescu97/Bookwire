@@ -2,9 +2,8 @@ package com.store.Bookwire.services.impl;
 
 import com.store.Bookwire.exceptions.ResourceNotFoundException;
 import com.store.Bookwire.mappers.BookMapper;
-import com.store.Bookwire.models.dtos.BookRequestDto;
 import com.store.Bookwire.models.dtos.BookUpdateDto;
-import com.store.Bookwire.models.dtos.view.BookAdminDto;
+import com.store.Bookwire.models.dtos.BookAdminDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.BookManagementService;
@@ -23,7 +22,7 @@ public class BookManagementServiceImpl implements BookManagementService {
     }
 
     @Override
-    public BookAdminDto save(BookRequestDto dto) {
+    public BookAdminDto save(BookAdminDto dto) {
         Book book = mapper.toEntity(dto);
         return mapper.toAdminDto(repository.save(book));
     }

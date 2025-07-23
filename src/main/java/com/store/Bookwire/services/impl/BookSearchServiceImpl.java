@@ -1,7 +1,7 @@
 package com.store.Bookwire.services.impl;
 
 import com.store.Bookwire.mappers.BookMapper;
-import com.store.Bookwire.models.dtos.view.BookViewDto;
+import com.store.Bookwire.models.dtos.BookDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import com.store.Bookwire.services.BookSearchService;
@@ -31,7 +31,7 @@ public class BookSearchServiceImpl implements BookSearchService {
     private final Set<String> SORT_FIELDS = Set.of("title", "price", "numberOfPages");
 
     @Override
-    public List<BookViewDto> getAll(int page, int size, String sortBy, String direction){
+    public List<BookDto> getAll(int page, int size, String sortBy, String direction){
         Pageable pageable = buildPageable(page, size, sortBy, direction);
         return repository.findAll(pageable)
                 .getContent()
@@ -41,7 +41,7 @@ public class BookSearchServiceImpl implements BookSearchService {
     }
 
     @Override
-    public List<BookViewDto> searchBooks(String value, int page, int size, String sortBy, String direction){
+    public List<BookDto> searchBooks(String value, int page, int size, String sortBy, String direction){
         Pageable pageable = buildPageable(page, size, sortBy, direction);
         Specification<Book> spec = bookSpecification.titleAuthorIsbnContains(value);
         Page<Book> result = repository.findAll(spec, pageable);
@@ -52,7 +52,7 @@ public class BookSearchServiceImpl implements BookSearchService {
     }
 
     @Override
-    public List<BookViewDto> filterBooks(List<String> categories, Double minPrice, Double maxPrice, Integer minPages, Integer maxPages, int page, int size, String sortBy, String direction) {
+    public List<BookDto> filterBooks(List<String> categories, Double minPrice, Double maxPrice, Integer minPages, Integer maxPages, int page, int size, String sortBy, String direction) {
         Pageable pageable = buildPageable(page, size, sortBy, direction);
 
         Specification<Book> spec = bookSpecification
@@ -67,7 +67,7 @@ public class BookSearchServiceImpl implements BookSearchService {
     }
 
     @Override
-    public Optional<BookViewDto> getBook(Long id) {
+    public Optional<BookDto> getBook(Long id) {
         return repository.findById(id).map(this::getBookView);
     }
 
@@ -81,7 +81,7 @@ public class BookSearchServiceImpl implements BookSearchService {
         return PageRequest.of(page, size, sort);
     }
 
-    private BookViewDto getBookView(Book book) {
+    private BookDto getBookView(Book book) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isAdmin = auth != null &&

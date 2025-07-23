@@ -1,8 +1,7 @@
 package com.store.Bookwire.controllers;
 
-import com.store.Bookwire.models.dtos.BookRequestDto;
 import com.store.Bookwire.models.dtos.BookUpdateDto;
-import com.store.Bookwire.models.dtos.view.BookAdminDto;
+import com.store.Bookwire.models.dtos.BookAdminDto;
 import com.store.Bookwire.services.BookManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,7 +36,7 @@ public class BookManagementController {
             @ApiResponse(responseCode = "403", description = "Access denied")
     })
     @PostMapping
-    public ResponseEntity<BookAdminDto> save(@Valid @RequestBody BookRequestDto dto){
+    public ResponseEntity<BookAdminDto> save(@Valid @RequestBody BookAdminDto dto){
         BookAdminDto savedBook = service.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }

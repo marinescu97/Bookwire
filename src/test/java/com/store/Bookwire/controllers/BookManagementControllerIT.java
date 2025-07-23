@@ -3,7 +3,7 @@ package com.store.Bookwire.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.Bookwire.mappers.BookMapper;
 import com.store.Bookwire.models.Category;
-import com.store.Bookwire.models.dtos.BookRequestDto;
+import com.store.Bookwire.models.dtos.BookAdminDto;
 import com.store.Bookwire.models.entities.Book;
 import com.store.Bookwire.repositories.BookRepository;
 import jakarta.persistence.EntityManager;
@@ -45,12 +45,12 @@ class BookManagementControllerIT {
     @Autowired
     private EntityManager entityManager;
 
-    protected BookRequestDto testDto;
+    protected BookAdminDto testDto;
     protected String stringDto;
     protected Book testBook;
 
     void initTestDto() {
-        testDto = BookRequestDto.builder()
+        testDto = BookAdminDto.builder()
                 .title("Test book")
                 .author("Test author")
                 .category(Category.BIOGRAPHY)
